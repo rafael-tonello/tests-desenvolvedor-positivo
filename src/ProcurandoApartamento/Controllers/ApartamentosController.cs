@@ -69,5 +69,16 @@ namespace ProcurandoApartamento.Controllers
             await _apartamentoService.Delete(id);
             return NoContent().WithHeaders(HeaderUtil.CreateEntityDeletionAlert(EntityName, id.ToString()));
         }
+
+        [HttpGet]
+        public async Task<ActionResult<string>> MelhorApartamento([FromQuery] string[] search)
+        {
+            _log.LogDebug($"REST request to get the best block with at least one available apartament: {search}");
+            if (search.Length < 1)
+                throw new BadRequestAlertException("You must provide at least one search terms", EntityName, "nosearchterms");
+
+            var result = await _apartamentoService.FindBest(search);
+            return Ok("QUADRA " + result);
+        }
     }
 }

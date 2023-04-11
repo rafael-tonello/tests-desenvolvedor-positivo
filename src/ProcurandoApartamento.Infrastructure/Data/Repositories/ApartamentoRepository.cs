@@ -17,5 +17,9 @@ namespace ProcurandoApartamento.Infrastructure.Data.Repositories
         {
         }
 
+        public async Task<IList<Apartamento>> getDisponibleApts()
+        {
+            return await Task.Run(() => { return _dbSet.Where(c => c.ApartamentoDisponivel).ToList(); });
+        }
     }
 }

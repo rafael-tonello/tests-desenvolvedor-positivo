@@ -11,6 +11,7 @@ namespace ProcurandoApartamento.Domain.Services.Interfaces
         Task<IPage<Apartamento>> FindAll(IPageable pageable);
 
         Task<Apartamento> FindOne(long id);
+        Task<string> FindBest(string[] search);
 
         Task Delete(long id);
     }

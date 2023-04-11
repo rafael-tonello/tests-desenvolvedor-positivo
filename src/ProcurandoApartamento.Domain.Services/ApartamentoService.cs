@@ -3,16 +3,19 @@ using JHipsterNet.Core.Pagination;
 using ProcurandoApartamento.Domain.Services.Interfaces;
 using ProcurandoApartamento.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ProcurandoApartamento.Domain.Services
 {
     public class ApartamentoService : IApartamentoService
     {
         protected readonly IApartamentoRepository _apartamentoRepository;
+        protected readonly IGetBestBlockService _getBestBlockService;
 
-        public ApartamentoService(IApartamentoRepository apartamentoRepository)
+        public ApartamentoService(IApartamentoRepository apartamentoRepository, IGetBestBlockService getBestBlockService)
         {
             _apartamentoRepository = apartamentoRepository;
+            _getBestBlockService = getBestBlockService;
         }
 
         public virtual async Task<Apartamento> Save(Apartamento apartamento)
@@ -40,6 +43,15 @@ namespace ProcurandoApartamento.Domain.Services
         {
             await _apartamentoRepository.DeleteByIdAsync(id);
             await _apartamentoRepository.SaveChangesAsync();
+        }
+
+        public virtual async Task<string> FindBest(string[] search)
+        {
+            var availableApts = await _apartamentoRepository.getDisponibleApts();
+
+            var bestBlock = await _getBestBlockService.getBestBlock(availableApts, search.ToList());
+
+            return bestBlock.number.ToString();
         }
     }
 }
